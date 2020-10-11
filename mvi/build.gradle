@@ -27,7 +27,8 @@ android {
         freeCompilerArgs = [
             KotlinCompilerArgs.allowExperimentalCoroutinesApi,
             KotlinCompilerArgs.allowFlowPreview,
-            KotlinCompilerArgs.allowResultReturnType
+            KotlinCompilerArgs.allowResultReturnType,
+            KotlinCompilerArgs.allowExperimentalStdlibApi
         ]
     }
 }
