@@ -1,0 +1,4 @@
+ktlint {
+    version.set(Ktlint.LINTER_VERSION)
+    debug.set(true)
+}

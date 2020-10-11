@@ -1,0 +1,45 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion SdkConfig.COMPILE_SDK_VERSION
+    buildToolsVersion SdkConfig.BUILD_TOOLS_VERSION
+
+    defaultConfig {
+        minSdkVersion SdkConfig.MIN_SDK_VERSION
+        targetSdkVersion SdkConfig.TARGET_SDK_VERSION
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    kotlinOptions {
+        freeCompilerArgs = [
+            KotlinCompilerArgs.allowExperimentalCoroutinesApi,
+            KotlinCompilerArgs.allowFlowPreview,
+            KotlinCompilerArgs.allowResultReturnType
+        ]
+    }
+}
+
+dependencies {
+    implementation Kotlin.stdLib
+    implementation Kotlin.coroutinesCore
+    implementation Android.lifecycleViewModelKtx
+    implementation Android.lifecycleLiveDataKtx
+
+    testImplementation Android.coreTesting
+    testImplementation Kotlin.coroutinesTest
+    testImplementation Kotlin.testJunit
+    testImplementation Tests.jUnit4
+}

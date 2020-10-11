@@ -1,0 +1,3 @@
+include ':mvi'
+include ':app'
+rootProject.name = "PontoApp"

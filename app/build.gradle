@@ -1,0 +1,37 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion SdkConfig.COMPILE_SDK_VERSION
+    buildToolsVersion SdkConfig.BUILD_TOOLS_VERSION
+
+    defaultConfig {
+        applicationId "br.com.gerencioservicos.pontoapp"
+        minSdkVersion SdkConfig.MIN_SDK_VERSION
+        targetSdkVersion SdkConfig.TARGET_SDK_VERSION
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation Kotlin.stdLib
+    implementation Android.coreKtx
+    implementation Android.appCompat
+    implementation Android.constraintLayout
+
+    testImplementation Tests.jUnit4
+
+    androidTestImplementation Tests.instrumentedJUnit
+    androidTestImplementation Tests.espressoCore
+}
