@@ -1,3 +1,5 @@
+include ':app:repository'
+include ':app:usecases'
 include ':mvi'
 include ':app'
 rootProject.name = "PontoApp"

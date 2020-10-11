@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
@@ -7,13 +7,13 @@ android {
     buildToolsVersion SdkConfig.BUILD_TOOLS_VERSION
 
     defaultConfig {
-        applicationId "br.com.gerencioservicos.pontoapp"
         minSdkVersion SdkConfig.MIN_SDK_VERSION
         targetSdkVersion SdkConfig.TARGET_SDK_VERSION
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -25,23 +25,17 @@ android {
 
     kotlinOptions {
         freeCompilerArgs = [
-            KotlinCompilerArgs.allowResultReturnType
+                KotlinCompilerArgs.allowExperimentalCoroutinesApi,
+                KotlinCompilerArgs.allowFlowPreview,
+                KotlinCompilerArgs.allowResultReturnType,
+                KotlinCompilerArgs.allowExperimentalStdlibApi
         ]
     }
 }
 
 dependencies {
-    implementation project(Internals.mvi)
-    implementation project(Internals.usecases)
+    implementation project(Internals.repository)
 
     implementation Kotlin.stdLib
-    implementation Android.coreKtx
-    implementation Android.appCompat
-    implementation Android.constraintLayout
-    implementation Android.lifecycleViewModelKtx
-
-    testImplementation Tests.jUnit4
-
-    androidTestImplementation Tests.instrumentedJUnit
-    androidTestImplementation Tests.espressoCore
+    implementation Kotlin.coroutinesCore
 }

@@ -58,7 +58,7 @@ class TestMviViewModel(mviLogger: MviLogger) : MviViewModel<TestIntention, TestS
 
     private fun reduceMadeReady() = Result.success(TestState.Loaded(emptyList()))
 
-    private fun reduceAddedName(state: TestState, partialState: TestPartialState.AddedName) = requireState<TestState.Loaded, TestState.Loaded>(state) {
+    private fun reduceAddedName(state: TestState, partialState: TestPartialState.AddedName) = requireState<TestState, TestState.Loaded>(state) {
         val newList = names.toMutableList()
         newList.add(partialState.name)
 
@@ -67,7 +67,7 @@ class TestMviViewModel(mviLogger: MviLogger) : MviViewModel<TestIntention, TestS
         )
     }
 
-    private fun reduceNamesSubmitted(state: TestState, partialState: TestPartialState.NamesSubmitted) = requireState<TestState.Loaded, TestState.NamesSubmitted>(state) {
+    private fun reduceNamesSubmitted(state: TestState, partialState: TestPartialState.NamesSubmitted) = requireState<TestState, TestState.Loaded>(state) {
         TestState.NamesSubmitted(partialState.names)
     }
 
