@@ -1,15 +1,22 @@
 package br.com.gerencioservicos.pontoapp.home
 
 import androidx.lifecycle.viewModelScope
+import br.com.gerencioservicos.usecases.IsPermissionAllowed
 import br.com.gerencioservicos.usecases.ListenToPermissionsAndWorklogs
 import kotlinx.coroutines.flow.map
 import org.xtras.mvi.FlowRetrier
+import org.xtras.mvi.Intention
 import org.xtras.mvi.MviViewModel
+import org.xtras.mvi.PartialState
 import org.xtras.mvi.PartialStateSender
+import org.xtras.mvi.State
 import org.xtras.mvi.StubMviLogger
+import org.xtras.mvi.actions.newInsertingActions
+import org.xtras.mvi.requireState
 
 internal class HomeViewModel(
-    listenToPermissionsAndWorklogs: ListenToPermissionsAndWorklogs
+    listenToPermissionsAndWorklogs: ListenToPermissionsAndWorklogs,
+    private val isPermissionAllowed: IsPermissionAllowed
 ) : MviViewModel<HomeIntention, HomeState, HomePartialState>(
     HomeState.Loading,
     StubMviLogger()
@@ -31,6 +38,18 @@ internal class HomeViewModel(
         partialStateSender: PartialStateSender<HomePartialState>
     ) = when (intention) {
         HomeIntention.Load -> flowRetrier.retry(partialStateSender)
+        is HomeIntention.ClickedOnPermission -> executeClickedOnPermission(intention, partialStateSender)
+    }
+
+    private suspend fun executeClickedOnPermission(intention: HomeIntention.ClickedOnPermission, partialStateSender: PartialStateSender<HomePartialState>) {
+        try {
+            val isAllowed = isPermissionAllowed(intention.permissionType)
+            if (!isAllowed) {
+                partialStateSender.send(HomePartialState.AskedForPermission(intention.permissionType))
+            }
+        } catch (exception: Exception) {
+            partialStateSender.send(HomePartialState.GenericErrorHappened(exception))
+        }
     }
 
     override fun tryReduce(
@@ -39,6 +58,8 @@ internal class HomeViewModel(
     ): Result<HomeState> = when (partialState) {
         is HomePartialState.ErrorCaught -> reduceErrorCaught(partialState)
         is HomePartialState.ChangedPermissionsAndWorklogs -> reduceChangePermissionsAndWorklogs(state, partialState)
+        is HomePartialState.AskedForPermission -> reduceAskedForPermission(state, partialState)
+        is HomePartialState.GenericErrorHappened -> reduceGenericErrorHappened(state, partialState)
     }
 
     private fun reduceErrorCaught(partialState: HomePartialState.ErrorCaught) = Result.success(HomeState.Error(partialState.throwable))
@@ -48,6 +69,14 @@ internal class HomeViewModel(
             return Result.success(state.copy(permissionsAndWorklogs = partialState.permissionsAndWorklogs))
         }
 
-        return Result.success(HomeState.Loaded(partialState.permissionsAndWorklogs, emptyList()))
+        return Result.success(HomeState.Loaded(partialState.permissionsAndWorklogs, emptyList(), null))
+    }
+
+    private fun reduceAskedForPermission(state: HomeState, partialState: HomePartialState.AskedForPermission) = requireState<HomeState, HomeState.Loaded>(state) {
+        copy(actions = actions.newInsertingActions(HomeAction.AskForPermission(partialState.permissionType)))
+    }
+
+    private fun reduceGenericErrorHappened(state: HomeState, partialState: HomePartialState.GenericErrorHappened) = requireState<HomeState, HomeState.Loaded>(state) {
+        copy(actionError = partialState.throwable)
     }
 }

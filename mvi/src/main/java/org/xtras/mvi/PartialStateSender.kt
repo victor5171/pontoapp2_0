@@ -1,5 +1,5 @@
 package org.xtras.mvi
 
-interface PartialStateSender<TPartialState> {
+public interface PartialStateSender<TPartialState> {
     suspend fun send(partialState: TPartialState)
 }

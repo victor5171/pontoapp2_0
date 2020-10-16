@@ -1,12 +1,13 @@
 package org.xtras.mvi
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.scan
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 abstract class MviViewModel<TIntention : Intention, TState : State, TPartialState : PartialState>(
@@ -14,28 +15,25 @@ abstract class MviViewModel<TIntention : Intention, TState : State, TPartialStat
     private val logger: MviLogger
 ) : ViewModel() {
 
-    private var currentState: TState = initialState
-
-    private val partialStatesChannel = Channel<TPartialState>(Channel.UNLIMITED)
+    private val _partialStates = MutableSharedFlow<TPartialState>()
 
     @Suppress("LeakingThis")
-    val state = partialStatesChannel.consumeAsFlow()
+    public val state: StateFlow<TState> = _partialStates
         .scan(initialState, this::_reduce)
-        .onEach { currentState = it }
-        .asLiveData()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, initialState)
 
-    fun executeIntention(intention: TIntention) {
-        logger.logIntention(intention, currentState)
+    public fun executeIntention(intention: TIntention) {
+        logger.logIntention(intention, state.value)
 
         viewModelScope.launch {
             executeIntention(
                 intention,
-                currentState,
+                state.value,
                 object : PartialStateSender<TPartialState> {
                     override suspend fun send(partialState: TPartialState) {
-                        logger.logPartialState(intention, currentState, partialState)
+                        logger.logPartialState(intention, state.value, partialState)
 
-                        partialStatesChannel.send(partialState)
+                        _partialStates.emit(partialState)
                     }
                 }
             )

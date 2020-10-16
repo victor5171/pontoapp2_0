@@ -1,9 +1,19 @@
 package org.xtras.mvi.actions
 
-abstract class Action {
+public abstract class Action {
     internal var isConsumed = false
 
-    fun consume() {
+    public fun consume() {
         isConsumed = true
+    }
+
+    public fun executeAndConsume(action: () -> Unit) {
+        if (isConsumed) {
+            return
+        }
+
+        action()
+
+        consume()
     }
 }

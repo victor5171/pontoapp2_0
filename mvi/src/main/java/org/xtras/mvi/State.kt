@@ -1,3 +1,3 @@
 package org.xtras.mvi
 
-interface State
+public interface State

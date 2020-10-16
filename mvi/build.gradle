@@ -33,6 +33,10 @@ android {
     }
 }
 
+kotlin {
+    explicitApi = "warning"
+}
+
 dependencies {
     implementation Kotlin.stdLib
     implementation Kotlin.coroutinesCore

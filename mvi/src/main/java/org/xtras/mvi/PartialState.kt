@@ -1,3 +1,3 @@
 package org.xtras.mvi
 
-interface PartialState
+public interface PartialState

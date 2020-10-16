@@ -25,7 +25,8 @@ android {
 
     kotlinOptions {
         freeCompilerArgs = [
-            KotlinCompilerArgs.allowResultReturnType
+            KotlinCompilerArgs.allowResultReturnType,
+            KotlinCompilerArgs.allowExperimentalCoroutinesApi
         ]
     }
 }
@@ -33,6 +34,7 @@ android {
 dependencies {
     implementation project(Internals.mvi)
     implementation project(Internals.usecases)
+    implementation project(Internals.repository)
 
     implementation Kotlin.stdLib
     implementation Android.coreKtx
@@ -41,6 +43,8 @@ dependencies {
     implementation Android.lifecycleViewModelKtx
 
     testImplementation Tests.jUnit4
+    testImplementation Kotlin.testJunit
+    testImplementation Kotlin.coroutinesTest
 
     androidTestImplementation Tests.instrumentedJUnit
     androidTestImplementation Tests.espressoCore

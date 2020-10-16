@@ -1,3 +1,3 @@
 package org.xtras.mvi
 
-interface Intention
+public interface Intention

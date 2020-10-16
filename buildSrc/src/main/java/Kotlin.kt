@@ -5,7 +5,7 @@ object Kotlin {
     const val VERSION = "1.4.10"
 
     private object Versions {
-        const val coroutinesVersion = "1.3.9"
+        const val coroutinesVersion = "1.4.0-M1"
     }
 
     const val stdLib = "org.jetbrains.kotlin:kotlin-stdlib:$VERSION"

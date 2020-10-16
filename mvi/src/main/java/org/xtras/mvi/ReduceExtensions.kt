@@ -1,6 +1,6 @@
 package org.xtras.mvi
 
-inline fun <TState, reified TRequiredState> requireState(state: TState, reduce: TRequiredState.() -> TState): Result<TState> {
+public inline fun <TState, reified TRequiredState> requireState(state: TState, reduce: TRequiredState.() -> TState): Result<TState> {
     (state as? TRequiredState)?.let {
         val newState = reduce(it)
         return Result.success(newState)
@@ -9,7 +9,7 @@ inline fun <TState, reified TRequiredState> requireState(state: TState, reduce: 
     return Result.failure(StateRequiredNotFulfilledException())
 }
 
-infix fun <TState> Result<TState>.or(another: Result<TState>): Result<TState> {
+public infix fun <TState> Result<TState>.or(another: Result<TState>): Result<TState> {
     if (this.isSuccess) {
         return this
     }

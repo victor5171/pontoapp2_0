@@ -6,20 +6,22 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.retry
+import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.launch
 
-class FlowRetrier<TPartialState>(
+public class FlowRetrier<TPartialState>(
     private val coroutineScope: CoroutineScope,
     private val flow: Flow<TPartialState>,
     private val onError: (Throwable) -> TPartialState
 ) {
     private var collectionJob: Job? = null
 
-    fun cancel() {
+    public fun cancel() {
         collectionJob?.cancel()
     }
 
-    fun retry(partialStateSender: PartialStateSender<TPartialState>) {
+    public fun retry(partialStateSender: PartialStateSender<TPartialState>) {
         cancel()
 
         collectionJob = coroutineScope.launch {

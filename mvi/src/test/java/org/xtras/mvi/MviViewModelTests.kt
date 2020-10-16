@@ -27,8 +27,6 @@ class MviViewModelTests {
     fun `When I start my test view model, it should have a loading state`() {
         val testMviViewModel = TestMviViewModel(StubMviLogger())
 
-        testMviViewModel.state.observeForever {}
-
         assertEquals(TestState.Loading, testMviViewModel.state.value)
     }
 
@@ -41,7 +39,7 @@ class MviViewModelTests {
         val makeReadyIntention = TestIntention.MakeReady
         testMviViewModel.executeIntention(makeReadyIntention)
 
-        val value = testMviViewModel.state.blockingObserve()
+        val value = testMviViewModel.state.value
 
         assertTrue { (value as TestState.Loaded).names.isEmpty() }
 
@@ -72,7 +70,7 @@ class MviViewModelTests {
         val addNamesIntention = TestIntention.AddNames("Name")
         testMviViewModel.executeIntention(addNamesIntention)
 
-        val valueAfterAddNames = testMviViewModel.state.blockingObserve()
+        val valueAfterAddNames = testMviViewModel.state.value
 
         assertTrue { (valueAfterAddNames as TestState.Loaded).names.contains("Name") }
 
@@ -110,7 +108,7 @@ class MviViewModelTests {
         val addNamesIntention = TestIntention.AddNames("Name")
         testMviViewModel.executeIntention(addNamesIntention)
 
-        val value = testMviViewModel.state.blockingObserve()
+        val value = testMviViewModel.state.value
 
         assertTrue { value is TestState.Loading }
 
@@ -137,18 +135,13 @@ class MviViewModelTests {
 
         val testMviViewModel = TestMviViewModel(stubMviLogger)
 
-        val emissions = mutableListOf<TestState>()
-        testMviViewModel.state.observeForever {
-            emissions.add(it)
-        }
-
         testMviViewModel.executeIntention(TestIntention.MakeReady)
 
         testMviViewModel.executeIntention(TestIntention.AddNames("Name 1"))
         testMviViewModel.executeIntention(TestIntention.AddNames("Name 2"))
         testMviViewModel.executeIntention(TestIntention.SubmitNames)
 
-        val lastEmission = emissions.last()
+        val lastEmission = testMviViewModel.state.value
 
         assertTrue {
             val names = (lastEmission as TestState.NamesSubmitted).names
@@ -164,7 +157,7 @@ class MviViewModelTests {
 
         testMviViewModel.executeIntention(TestIntention.SubmitNames)
 
-        val value = testMviViewModel.state.blockingObserve()
+        val value = testMviViewModel.state.value
 
         assertTrue {
             value is TestState.Error && value.throwable is ClassCastException

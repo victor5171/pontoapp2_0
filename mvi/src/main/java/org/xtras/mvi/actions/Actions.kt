@@ -1,8 +1,8 @@
 package org.xtras.mvi.actions
 
-private fun getNonConsumedItems(iterable: Iterable<Action>) = iterable.filter { !it.isConsumed }
+private fun <T : Action> getNonConsumedItems(iterable: Iterable<T>): Iterable<T> = iterable.filter { !it.isConsumed }
 
-fun Iterable<Action>.newInsertingActions(newActions: List<Action>) = Iterable {
+public fun <T : Action> Iterable<T>.newInsertingActions(newActions: List<T>): Iterable<T> = Iterable {
     val oldItems = toList()
 
     iterator {
@@ -11,4 +11,4 @@ fun Iterable<Action>.newInsertingActions(newActions: List<Action>) = Iterable {
     }
 }
 
-fun Iterable<Action>.newInsertingActions(vararg newActions: Action) = newInsertingActions(newActions.toList())
+public fun <T : Action> Iterable<T>.newInsertingActions(vararg newActions: T): Iterable<T> = newInsertingActions(newActions.toList())

@@ -1,6 +1,6 @@
 package org.xtras.mvi
 
-class StubMviLogger : MviLogger {
+public class StubMviLogger : MviLogger {
     private val loggedIntentions = mutableMapOf<Intention, State>()
     private val loggedPartialStates = mutableMapOf<Intention, Pair<State, PartialState>>()
     private val loggedTransformedStates = mutableMapOf<PartialState, Pair<State, State>>()
@@ -30,11 +30,11 @@ class StubMviLogger : MviLogger {
         loggedFailedStateTransformations[partialState] = previousState to throwable
     }
 
-    fun getLoggedIntention(intention: Intention) = loggedIntentions[intention]
+    public fun getLoggedIntention(intention: Intention) = loggedIntentions[intention]
 
-    fun getLoggedStateAndPartialState(intention: Intention) = loggedPartialStates[intention]
+    public fun getLoggedStateAndPartialState(intention: Intention) = loggedPartialStates[intention]
 
-    fun getLoggedTransformedStates(partialState: PartialState) = loggedTransformedStates[partialState]
+    public fun getLoggedTransformedStates(partialState: PartialState) = loggedTransformedStates[partialState]
 
-    fun getLoggedFailedStateTransformation(partialState: PartialState) = loggedFailedStateTransformations[partialState]
+    public fun getLoggedFailedStateTransformation(partialState: PartialState) = loggedFailedStateTransformations[partialState]
 }

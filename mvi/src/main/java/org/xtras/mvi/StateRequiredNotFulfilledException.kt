@@ -1,3 +1,3 @@
 package org.xtras.mvi
 
-class StateRequiredNotFulfilledException : Exception()
+public class StateRequiredNotFulfilledException : Exception()
