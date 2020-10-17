@@ -13,7 +13,8 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:4.1.0"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${Kotlin.VERSION}"
-        classpath "org.jlleitschuh.gradle:ktlint-gradle:${Ktlint.PLUGIN_VERSION}"
+        classpath Ktlint.gradlePlugin
+        classpath Navigation.safeArgsPlugin
     }
 }
 

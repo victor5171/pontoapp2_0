@@ -37,4 +37,11 @@ dependencies {
     implementation Kotlin.stdLib
     implementation Kotlin.coroutinesCore
     implementation Android.appCompat
+    implementation Koin.android
+
+    testImplementation Tests.jUnit4
+    testImplementation Kotlin.testJunit
+    testImplementation Tests.robolectric
+    testImplementation Tests.testXCore
+    testImplementation Kotlin.coroutinesTest
 }

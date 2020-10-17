@@ -38,4 +38,5 @@ dependencies {
 
     implementation Kotlin.stdLib
     implementation Kotlin.coroutinesCore
+    implementation Koin.core
 }

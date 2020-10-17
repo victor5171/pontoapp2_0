@@ -7,10 +7,11 @@ import androidx.core.content.ContextCompat
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.isActive
 
-private const val PERMISSIONS_REFRESH_RATE_IN_MILLISECONDS = 1000L
+internal const val PERMISSIONS_REFRESH_RATE_IN_MILLISECONDS = 1000L
 
 internal class PermissionsRepositoryImpl(
     private val context: Context
@@ -27,7 +28,7 @@ internal class PermissionsRepositoryImpl(
 
                 delay(PERMISSIONS_REFRESH_RATE_IN_MILLISECONDS)
             }
-        }
+        }.distinctUntilChanged { old, new -> old.toTypedArray().contentDeepEquals(new.toTypedArray()) }
     }
 
     override fun isPermissionAllowed(permissionType: PermissionType): Boolean {

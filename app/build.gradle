@@ -24,10 +24,7 @@ android {
     }
 
     kotlinOptions {
-        freeCompilerArgs = [
-            KotlinCompilerArgs.allowResultReturnType,
-            KotlinCompilerArgs.allowExperimentalCoroutinesApi
-        ]
+        freeCompilerArgs = []
     }
 }
 
@@ -35,17 +32,16 @@ dependencies {
     implementation project(Internals.mvi)
     implementation project(Internals.usecases)
     implementation project(Internals.repository)
+    implementation project(Internals.navigation)
+    implementation project(Internals.home)
 
     implementation Kotlin.stdLib
-    implementation Android.coreKtx
     implementation Android.appCompat
-    implementation Android.constraintLayout
-    implementation Android.lifecycleViewModelKtx
+    implementation Navigation.navigationFragment
+    implementation Koin.android
 
     testImplementation Tests.jUnit4
-    testImplementation Kotlin.testJunit
-    testImplementation Kotlin.coroutinesTest
-
-    androidTestImplementation Tests.instrumentedJUnit
-    androidTestImplementation Tests.espressoCore
+    testImplementation Koin.test
+    testImplementation Tests.robolectric
+    testImplementation Tests.testXCore
 }

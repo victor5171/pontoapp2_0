@@ -1,4 +1,4 @@
-package br.com.gerencioservicos.pontoapp.home
+package br.com.gerencioservicos.home.viewmodel
 
 import br.com.gerencioservicos.repository.permissions.Permission
 import br.com.gerencioservicos.repository.permissions.PermissionType

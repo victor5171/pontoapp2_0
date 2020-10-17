@@ -6,6 +6,7 @@ object Android {
         const val core = "1.3.2"
         const val lifecycle = "2.2.0"
         const val arch = "2.1.0"
+        const val recyclerView = "1.1.0"
     }
 
     const val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
@@ -14,4 +15,5 @@ object Android {
     const val lifecycleViewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycle}"
     const val lifecycleLiveDataKtx = "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.lifecycle}"
     const val coreTesting = "androidx.arch.core:core-testing:${Versions.arch}"
+    const val recyclerView = "androidx.recyclerview:recyclerview:${Versions.recyclerView}"
 }

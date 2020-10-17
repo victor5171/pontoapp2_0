@@ -1,15 +1,12 @@
-package br.com.gerencioservicos.pontoapp.home
+package br.com.gerencioservicos.home.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import br.com.gerencioservicos.usecases.IsPermissionAllowed
 import br.com.gerencioservicos.usecases.ListenToPermissionsAndWorklogs
 import kotlinx.coroutines.flow.map
 import org.xtras.mvi.FlowRetrier
-import org.xtras.mvi.Intention
 import org.xtras.mvi.MviViewModel
-import org.xtras.mvi.PartialState
 import org.xtras.mvi.PartialStateSender
-import org.xtras.mvi.State
 import org.xtras.mvi.StubMviLogger
 import org.xtras.mvi.actions.newInsertingActions
 import org.xtras.mvi.requireState

@@ -1,3 +1,5 @@
+include ':app:home'
+include ':app:navigation'
 include ':app:repository'
 include ':app:usecases'
 include ':mvi'
