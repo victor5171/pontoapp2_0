@@ -5,6 +5,7 @@ import br.com.gerencioservicos.repository.permissions.PermissionType
 import br.com.gerencioservicos.usecases.IsPermissionAllowed
 import br.com.gerencioservicos.usecases.ListenToPermissionsAndWorklogs
 import br.com.gerencioservicos.usecases.PermissionsAndWorklogs
+import br.com.gerencioservicos.usecases.RetrieveVersion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
@@ -33,7 +34,11 @@ class HomeViewModelTest {
             throw Exception("This should not be called")
         }
 
-        val homeViewModel = HomeViewModel(listenToPermissionsAndWorklogs, isPermissionAllowed)
+        val retrieveVersion = RetrieveVersion {
+            "1.0"
+        }
+
+        val homeViewModel = HomeViewModel(listenToPermissionsAndWorklogs, isPermissionAllowed, retrieveVersion)
 
         assertEquals(HomeState.Loading, homeViewModel.state.value)
 
@@ -42,7 +47,7 @@ class HomeViewModelTest {
                 Permission(PermissionType.CAMERA, true),
                 Permission(PermissionType.GPS, true)
             ),
-            numberOfPendingWorklogs = 0
+            numberOfPendingWorklogs = 1
         )
 
         runBlocking {
@@ -52,7 +57,14 @@ class HomeViewModelTest {
         val loadedHomeState = homeViewModel.state.value as HomeState.Loaded
 
         assertTrue {
-            loadedHomeState.permissionsAndWorklogs == permissionAndWorklogs && loadedHomeState.actions.toList().isEmpty()
+            loadedHomeState.version == "1.0" &&
+            loadedHomeState.homeListItems.toTypedArray().contentDeepEquals(
+                arrayOf(
+                    HomeListItem.PermissionListItem(Permission(PermissionType.CAMERA, true)),
+                    HomeListItem.PermissionListItem(Permission(PermissionType.GPS, true)),
+                    HomeListItem.PendingSynchronizationListItem(1)
+                )
+            ) && loadedHomeState.actions.toList().isEmpty()
         }
     }
 
@@ -68,7 +80,11 @@ class HomeViewModelTest {
             throw Exception("This should not be called")
         }
 
-        val homeViewModel = HomeViewModel(listenToPermissionsAndWorklogs, isPermissionAllowed)
+        val retrieveVersion = RetrieveVersion {
+            throw Exception("This should not be called")
+        }
+
+        val homeViewModel = HomeViewModel(listenToPermissionsAndWorklogs, isPermissionAllowed, retrieveVersion)
 
         val errorHomeState = homeViewModel.state.value as HomeState.Error
 
@@ -96,7 +112,11 @@ class HomeViewModelTest {
             throw Exception("This should not be called")
         }
 
-        val homeViewModel = HomeViewModel(listenToPermissionsAndWorklogs, isPermissionAllowed)
+        val retrieveVersion = RetrieveVersion {
+            "1.0"
+        }
+
+        val homeViewModel = HomeViewModel(listenToPermissionsAndWorklogs, isPermissionAllowed, retrieveVersion)
 
         homeViewModel.executeIntention(HomeIntention.ClickedOnPermission(PermissionType.CAMERA))
 
@@ -131,7 +151,11 @@ class HomeViewModelTest {
             throw Exception("This should not be called")
         }
 
-        val homeViewModel = HomeViewModel(listenToPermissionsAndWorklogs, isPermissionAllowed)
+        val retrieveVersion = RetrieveVersion {
+            "1.0"
+        }
+
+        val homeViewModel = HomeViewModel(listenToPermissionsAndWorklogs, isPermissionAllowed, retrieveVersion)
 
         homeViewModel.executeIntention(HomeIntention.ClickedOnPermission(PermissionType.CAMERA))
 

@@ -1,3 +1,4 @@
+include ':app:styles'
 include ':app:home'
 include ':app:navigation'
 include ':app:repository'

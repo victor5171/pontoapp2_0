@@ -32,7 +32,8 @@ android {
     kotlinOptions {
         freeCompilerArgs = [
             KotlinCompilerArgs.allowResultReturnType,
-            KotlinCompilerArgs.allowExperimentalCoroutinesApi
+            KotlinCompilerArgs.allowExperimentalCoroutinesApi,
+            KotlinCompilerArgs.allowExperimentalStdlibApi
         ]
     }
 }
@@ -41,11 +42,17 @@ dependencies {
     implementation project(Internals.mvi)
     implementation project(Internals.usecases)
     implementation project(Internals.repository)
+    implementation project(Internals.styles)
 
     implementation Kotlin.stdLib
     implementation Android.lifecycleViewModelKtx
+    implementation Android.appCompat
     implementation Android.recyclerView
     implementation Android.constraintLayout
+    implementation Android.lifecycleRuntimeKtx
+    implementation Android.material
+    implementation Android.activity
+    implementation Android.fragment
     implementation Koin.viewModel
     implementation Externals.polyadapter
 

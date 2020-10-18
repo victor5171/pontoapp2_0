@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Build
 import br.com.gerencioservicos.home.HomeAdapterBuilder
 import br.com.gerencioservicos.home.viewmodel.HomeListItem
+import br.com.gerencioservicos.repository.permissions.PermissionType
 import io.mockk.mockkClass
 import org.junit.Assert
 import org.junit.Test
@@ -25,7 +26,9 @@ internal class HomeAdapterBuilderTest {
 
         val allItemsGenerator = SealedClassItemGenerator.create<HomeListItem> { mockkClass(it) }
 
-        val polyAdapterTester = PolyAdapterTester(HomeAdapterBuilder.buildAdapterBuilder(), allItemsGenerator)
+        val onPermissionClick: (PermissionType) -> Unit = {}
+
+        val polyAdapterTester = PolyAdapterTester(HomeAdapterBuilder.buildAdapterBuilder(onPermissionClick), allItemsGenerator)
 
         polyAdapterTester.testAll(activity) { viewTypeFromViewTypeRetriever, viewTypeFromAdapter ->
             Assert.assertEquals(viewTypeFromViewTypeRetriever, viewTypeFromAdapter)

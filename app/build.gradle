@@ -33,6 +33,7 @@ dependencies {
     implementation project(Internals.usecases)
     implementation project(Internals.repository)
     implementation project(Internals.navigation)
+    implementation project(Internals.styles)
     implementation project(Internals.home)
 
     implementation Kotlin.stdLib

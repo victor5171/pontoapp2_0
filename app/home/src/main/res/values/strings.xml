@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="permission_for">Permissão para %s</string>
+    <string name="gps">GPS</string>
+    <string name="camera">Câmera</string>
+    <string name="synchronizing_items">Sincronizando pontos: %d</string>
+    <string name="add_worklog">Marcar ponto</string>
+</resources>

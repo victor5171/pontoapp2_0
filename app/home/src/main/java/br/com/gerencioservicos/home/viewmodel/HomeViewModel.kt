@@ -3,6 +3,7 @@ package br.com.gerencioservicos.home.viewmodel
 import androidx.lifecycle.viewModelScope
 import br.com.gerencioservicos.usecases.IsPermissionAllowed
 import br.com.gerencioservicos.usecases.ListenToPermissionsAndWorklogs
+import br.com.gerencioservicos.usecases.RetrieveVersion
 import kotlinx.coroutines.flow.map
 import org.xtras.mvi.FlowRetrier
 import org.xtras.mvi.MviViewModel
@@ -13,14 +14,18 @@ import org.xtras.mvi.requireState
 
 internal class HomeViewModel(
     listenToPermissionsAndWorklogs: ListenToPermissionsAndWorklogs,
-    private val isPermissionAllowed: IsPermissionAllowed
+    private val isPermissionAllowed: IsPermissionAllowed,
+    private val retrieveVersion: RetrieveVersion
 ) : MviViewModel<HomeIntention, HomeState, HomePartialState>(
     HomeState.Loading,
     StubMviLogger()
 ) {
     private val flowRetrier = FlowRetrier(
         viewModelScope,
-        listenToPermissionsAndWorklogs().map { HomePartialState.ChangedPermissionsAndWorklogs(it) }
+        listenToPermissionsAndWorklogs().map {
+            val version = retrieveVersion()
+            HomePartialState.ChangedPermissionsAndWorklogs(version, it)
+        }
     ) {
         HomePartialState.ErrorCaught(it)
     }
@@ -62,11 +67,21 @@ internal class HomeViewModel(
     private fun reduceErrorCaught(partialState: HomePartialState.ErrorCaught) = Result.success(HomeState.Error(partialState.throwable))
 
     private fun reduceChangePermissionsAndWorklogs(state: HomeState, partialState: HomePartialState.ChangedPermissionsAndWorklogs): Result<HomeState> {
-        if (state is HomeState.Loaded) {
-            return Result.success(state.copy(permissionsAndWorklogs = partialState.permissionsAndWorklogs))
+        val homeListItems = buildList {
+            partialState.permissionsAndWorklogs.permissions.forEach {
+                add(HomeListItem.PermissionListItem(it))
+            }
+
+            if (partialState.permissionsAndWorklogs.numberOfPendingWorklogs > 0) {
+                add(HomeListItem.PendingSynchronizationListItem(partialState.permissionsAndWorklogs.numberOfPendingWorklogs))
+            }
         }
 
-        return Result.success(HomeState.Loaded(partialState.permissionsAndWorklogs, emptyList(), null))
+        if (state is HomeState.Loaded) {
+            return Result.success(state.copy(homeListItems = homeListItems))
+        }
+
+        return Result.success(HomeState.Loaded(partialState.version, homeListItems, emptyList(), null))
     }
 
     private fun reduceAskedForPermission(state: HomeState, partialState: HomePartialState.AskedForPermission) = requireState<HomeState, HomeState.Loaded>(state) {
