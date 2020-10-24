@@ -5,4 +5,10 @@
     <string name="camera">Câmera</string>
     <string name="synchronizing_items">Sincronizando pontos: %d</string>
     <string name="add_worklog">Marcar ponto</string>
+    <string name="given">Permitido</string>
+    <string name="not_given">Não permitido</string>
+    <string name="give_permissions_warning_title">Faltam permissões</string>
+    <string name="give_permissions_warning_text">É necessário dar permissões de %s para poder marcar pontos. Clique em OK para que o app guie você no processo!</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancelar</string>
 </resources>

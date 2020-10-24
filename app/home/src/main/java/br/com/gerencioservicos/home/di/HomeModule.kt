@@ -10,7 +10,8 @@ object HomeModule {
             HomeViewModel(
                 listenToPermissionsAndWorklogs = get(),
                 isPermissionAllowed = get(),
-                retrieveVersion = get()
+                retrieveVersion = get(),
+                getPendingPermissions = get()
             )
         }
     }

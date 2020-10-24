@@ -27,12 +27,7 @@ internal class PermissionItemViewHolder(
         this.item = item
 
         with(itemView) {
-            val permissionNameResourceId = when (item.permission.permissionType) {
-                PermissionType.CAMERA -> R.string.camera
-                PermissionType.GPS -> R.string.gps
-            }
-
-            val permissionName = resources.getString(permissionNameResourceId)
+            val permissionName = resources.getString(PermissionNameTranslator.translate(item.permission.permissionType))
 
             textViewPermissionText.text = resources.getString(R.string.permission_for, permissionName)
 
@@ -43,6 +38,12 @@ internal class PermissionItemViewHolder(
             }
 
             imageViewIcon.setImageResource(iconResourceId)
+
+            textViewPermissionStatus.setText(if(item.permission.isGiven) {
+                R.string.given
+            } else {
+                R.string.not_given
+            })
         }
     }
 }

@@ -18,15 +18,28 @@
         android:layout_marginStart="@dimen/small_spacing"
         android:src="@drawable/ic__08_tick_mark" />
     <TextView
+        style="@style/Label.Medium"
         android:id="@+id/textViewPermissionText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageViewIcon"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/textViewPermissionStatus"
         tools:text="Permissão para Câmera"
-        android:textSize="@dimen/text_size_medium"
         android:layout_marginStart="@dimen/small_spacing"
         android:layout_marginEnd="@dimen/small_spacing" />
+    <TextView
+        style="@style/Label.Medium.Bold"
+        android:id="@+id/textViewPermissionStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/textViewPermissionText"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/small_spacing"
+        android:layout_marginEnd="@dimen/small_spacing"
+        tools:text="Não permitido" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

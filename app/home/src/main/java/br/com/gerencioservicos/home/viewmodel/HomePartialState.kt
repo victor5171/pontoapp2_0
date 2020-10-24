@@ -5,8 +5,10 @@ import br.com.gerencioservicos.usecases.PermissionsAndWorklogs
 import org.xtras.mvi.PartialState
 
 internal sealed class HomePartialState : PartialState {
-    data class ErrorCaught(val throwable: Throwable) : HomePartialState()
-    data class ChangedPermissionsAndWorklogs(val version: String, val permissionsAndWorklogs: PermissionsAndWorklogs) : HomePartialState()
-    data class AskedForPermission(val permissionType: PermissionType) : HomePartialState()
-    data class GenericErrorHappened(val throwable: Throwable) : HomePartialState()
+    data class ShowFullscreenError(val throwable: Throwable) : HomePartialState()
+    data class ChangePermissionsAndWorklogs(val version: String, val permissionsAndWorklogs: PermissionsAndWorklogs) : HomePartialState()
+    data class AskForPermission(val permissionType: PermissionType) : HomePartialState()
+    data class ShowGenericError(val throwable: Throwable) : HomePartialState()
+    data class ShowWarningAboutPermissions(val permissionTypes: Collection<PermissionType>) : HomePartialState()
+    object OpenQrCodeScan : HomePartialState()
 }

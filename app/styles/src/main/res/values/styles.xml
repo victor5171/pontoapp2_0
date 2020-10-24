@@ -1,8 +1,23 @@
 <resources>
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowBackground">@color/backgroundColor</item>
+        <item name="colorPrimary">@color/blueZodiac</item>
+        <item name="colorPrimaryDark">@color/blackRussian</item>
+        <item name="colorAccent">@color/springGreen</item>
+        <item name="android:windowBackground">@color/athensGray</item>
+    </style>
+    <style name="Label" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="Label.Small" parent="@style/Label">
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+    <style name="Label.Small.Bold" parent="@style/Label.Small">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="Label.Medium" parent="@style/Label">
+        <item name="android:textSize">@dimen/text_size_medium</item>
+    </style>
+    <style name="Label.Medium.Bold" parent="@style/Label.Medium">
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

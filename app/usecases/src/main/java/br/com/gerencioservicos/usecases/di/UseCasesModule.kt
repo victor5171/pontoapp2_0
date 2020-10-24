@@ -1,8 +1,10 @@
 package br.com.gerencioservicos.usecases.di
 
+import br.com.gerencioservicos.usecases.GetPendingPermissions
 import br.com.gerencioservicos.usecases.IsPermissionAllowed
 import br.com.gerencioservicos.usecases.ListenToPermissionsAndWorklogs
 import br.com.gerencioservicos.usecases.RetrieveVersion
+import br.com.gerencioservicos.usecases.impl.GetPendingPermissionsImpl
 import br.com.gerencioservicos.usecases.impl.IsPermissionAllowedImpl
 import br.com.gerencioservicos.usecases.impl.ListenToPermissionsAndWorklogsImpl
 import br.com.gerencioservicos.usecases.impl.RetrieveVersionImpl
@@ -20,6 +22,11 @@ object UseCasesModule {
         }
         single<ListenToPermissionsAndWorklogs> {
             ListenToPermissionsAndWorklogsImpl(
+                permissionsRepository = get()
+            )
+        }
+        single<GetPendingPermissions> {
+            GetPendingPermissionsImpl(
                 permissionsRepository = get()
             )
         }

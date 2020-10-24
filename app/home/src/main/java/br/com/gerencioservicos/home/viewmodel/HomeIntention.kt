@@ -5,5 +5,6 @@ import org.xtras.mvi.Intention
 
 sealed class HomeIntention : Intention {
     object Load : HomeIntention()
+    object AddWorklog : HomeIntention()
     data class ClickedOnPermission(val permissionType: PermissionType) : HomeIntention()
 }
