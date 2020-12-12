@@ -7,4 +7,10 @@
         android:id="@+id/homeFragment"
         android:name="br.com.gerencioservicos.home.HomeFragment"
         android:label="HomeFragment" />
+
+    <fragment
+        android:id="@+id/qrcodeFragment"
+        android:name="br.com.gerencioservicos.qrcodescanner.QrcodeFragment"
+        android:label="QrcodeFragment" />
+
 </navigation>

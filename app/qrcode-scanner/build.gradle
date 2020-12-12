@@ -1,7 +1,8 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: "androidx.navigation.safeargs.kotlin"
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+}
 
 android {
     compileSdkVersion SdkConfig.COMPILE_SDK_VERSION
@@ -23,21 +24,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     kotlinOptions {
         jvmTarget = '1.8'
     }
 }
 
 dependencies {
-    implementation project(Internals.home)
-    implementation project(Internals.qrcode_scanner)
-
     implementation Kotlin.stdLib
-    implementation Navigation.navigationFragment
+    implementation Android.cameraCamera2
+    implementation Android.cameraView
+    implementation Android.fragment
+    implementation Android.constraintLayout
 }

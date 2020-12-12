@@ -10,6 +10,8 @@ object Android {
         const val material = "1.2.1"
         const val activity = "1.2.0-beta01"
         const val fragment = "1.3.0-beta01"
+        const val camera = "1.0.0-beta11"
+        const val cameraView = "1.0.0-alpha14"
     }
 
     const val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
@@ -23,4 +25,6 @@ object Android {
     const val material = "com.google.android.material:material:${Versions.material}"
     const val activity = "androidx.activity:activity-ktx:${Versions.activity}"
     const val fragment = "androidx.fragment:fragment:${Versions.fragment}"
+    const val cameraCamera2 = "androidx.camera:camera-camera2:${Versions.camera}"
+    const val cameraView = "androidx.camera:camera-view:${Versions.cameraView}"
 }

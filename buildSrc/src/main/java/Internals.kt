@@ -5,4 +5,5 @@ object Internals {
     const val navigation = ":app:navigation"
     const val styles = ":app:styles"
     const val home = ":app:home"
+    const val qrcode_scanner = ":app:qrcode-scanner"
 }

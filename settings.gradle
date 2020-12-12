@@ -1,3 +1,4 @@
+include ':app:qrcode-scanner'
 include ':app:styles'
 include ':app:home'
 include ':app:navigation'
