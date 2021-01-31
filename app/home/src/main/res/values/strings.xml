@@ -11,4 +11,6 @@
     <string name="give_permissions_warning_text">É necessário dar permissões de %s para poder marcar pontos. Clique em OK para que o app guie você no processo!</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancelar</string>
+    <string name="error_title">Ocorreu um erro</string>
+    <string name="error_message">Um erro desconhecido ocorreu, um relatório foi enviado para o desenvolvedor automaticamente.</string>
 </resources>

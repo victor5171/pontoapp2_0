@@ -25,6 +25,10 @@ android {
 
     testOptions {
         unitTests {
+            all {
+                useJUnitPlatform()
+            }
+
             includeAndroidResources = true
         }
     }
@@ -35,6 +39,13 @@ android {
             KotlinCompilerArgs.allowExperimentalCoroutinesApi,
             KotlinCompilerArgs.allowExperimentalStdlibApi
         ]
+
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -46,19 +57,21 @@ dependencies {
 
     implementation Kotlin.stdLib
     implementation Android.lifecycleViewModelKtx
+    implementation Android.lifecycleRuntimeKtx
+    implementation Android.lifecycleLiveDataKtx
     implementation Android.appCompat
     implementation Android.recyclerView
     implementation Android.constraintLayout
-    implementation Android.lifecycleRuntimeKtx
     implementation Android.material
     implementation Android.activity
     implementation Android.fragment
     implementation Koin.viewModel
     implementation Externals.polyadapter
 
-    testImplementation Kotlin.testJunit
     testImplementation Kotlin.coroutinesTest
     testImplementation Tests.mockk
     testImplementation Tests.robolectric
     testImplementation Tests.testXCore
+    testImplementation Tests.kotestRunner
+    testImplementation Tests.kotestRobolectric
 }

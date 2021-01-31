@@ -11,7 +11,8 @@ object HomeModule {
                 listenToPermissionsAndWorklogs = get(),
                 isPermissionAllowed = get(),
                 retrieveVersion = get(),
-                getPendingPermissions = get()
+                getPendingPermissions = get(),
+                logger = get()
             )
         }
     }

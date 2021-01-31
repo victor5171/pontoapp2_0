@@ -1,128 +1,89 @@
 package br.com.gerencioservicos.home.viewmodel
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import br.com.gerencioservicos.usecases.GetPendingPermissions
 import br.com.gerencioservicos.usecases.IsPermissionAllowed
 import br.com.gerencioservicos.usecases.ListenToPermissionsAndWorklogs
 import br.com.gerencioservicos.usecases.RetrieveVersion
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import org.xtras.mvi.FlowRetrier
-import org.xtras.mvi.MviViewModel
-import org.xtras.mvi.PartialStateSender
-import org.xtras.mvi.StubMviLogger
-import org.xtras.mvi.actions.newInsertingActions
-import org.xtras.mvi.requireState
+import org.xtras.mvi.JobTerminator
+import org.xtras.mvi.Logger
+import org.xtras.mvi.Reducer
 
 internal class HomeViewModel(
-    listenToPermissionsAndWorklogs: ListenToPermissionsAndWorklogs,
+    private val listenToPermissionsAndWorklogs: ListenToPermissionsAndWorklogs,
     private val isPermissionAllowed: IsPermissionAllowed,
     private val getPendingPermissions: GetPendingPermissions,
-    private val retrieveVersion: RetrieveVersion
-) : MviViewModel<HomeIntention, HomeState, HomePartialState>(
-    HomeState.Loading,
-    StubMviLogger()
-) {
-    private val flowRetrier = FlowRetrier(
-        viewModelScope,
-        listenToPermissionsAndWorklogs().map {
-            val version = retrieveVersion()
-            HomePartialState.ChangePermissionsAndWorklogs(version, it)
-        }
-    ) {
-        HomePartialState.ShowFullscreenError(it)
-    }
+    private val retrieveVersion: RetrieveVersion,
+    logger: Logger
+) : ViewModel() {
+
+    private val reducer = Reducer(
+        coroutineScope = viewModelScope,
+        initialState = HomeState.Loading,
+        logger = logger,
+        intentExecutor = this::executeIntent
+    )
+
+    val state = reducer.state.asLiveData()
 
     init {
-        executeIntention(HomeIntention.Load)
+        execute(HomeIntent.Load)
     }
 
-    override suspend fun executeIntention(
-        intention: HomeIntention,
-        currentState: HomeState,
-        partialStateSender: PartialStateSender<HomePartialState>
-    ) = when (intention) {
-        HomeIntention.Load -> flowRetrier.retry(partialStateSender)
-        is HomeIntention.ClickedOnPermission -> executeClickedOnPermission(intention, partialStateSender)
-        HomeIntention.AddWorklog -> executeAddWorklog(partialStateSender)
+    fun execute(intent: HomeIntent) {
+        reducer.executeIntent(intent)
     }
 
-    private suspend fun executeClickedOnPermission(intention: HomeIntention.ClickedOnPermission, partialStateSender: PartialStateSender<HomePartialState>) {
+    private fun executeIntent(
+        intent: HomeIntent,
+        jobTerminator: JobTerminator<HomeIntent>
+    ) = when (intent) {
+        HomeIntent.Load -> executeLoad(jobTerminator)
+        is HomeIntent.ClickedOnPermission -> executeClickedOnPermission(intent)
+        HomeIntent.AddWorklog -> executeAddWorklog()
+    }
+
+    private fun executeLoad(jobTerminator: JobTerminator<HomeIntent>) = flow {
+        jobTerminator.kill(HomeIntent.Load)
+
+        emitAll(
+            listenToPermissionsAndWorklogs().map {
+                val version = retrieveVersion()
+                HomeTransform.ChangePermissionsAndWorklogs(version, it)
+            }
+        )
+    }
+
+    private fun executeClickedOnPermission(intent: HomeIntent.ClickedOnPermission) = flow {
         try {
-            val isAllowed = isPermissionAllowed(intention.permissionType)
+            val isAllowed = isPermissionAllowed(intent.permissionType)
             if (!isAllowed) {
-                partialStateSender.send(HomePartialState.AskForPermission(intention.permissionType))
+                emit(HomeTransform.AddAction(HomeAction.AskForPermission(intent.permissionType)))
             }
         } catch (exception: Exception) {
-            partialStateSender.send(HomePartialState.ShowGenericError(exception))
+            emit(HomeTransform.AddAction(HomeAction.ShowGenericError(exception)))
+            throw exception
         }
     }
 
-    private suspend fun executeAddWorklog(partialStateSender: PartialStateSender<HomePartialState>) {
+    private fun executeAddWorklog() = flow {
         try {
             val pendingPermissions = getPendingPermissions()
 
             if (pendingPermissions.isEmpty()) {
-                partialStateSender.send(HomePartialState.OpenQrCodeScan)
-                return
+                emit(HomeTransform.AddAction(HomeAction.OpenQrCodeScan))
+                return@flow
             }
 
-            partialStateSender.send(HomePartialState.ShowWarningAboutPermissions(pendingPermissions))
+            emit(HomeTransform.AddAction(HomeAction.ShowWarningAboutPermissions(pendingPermissions)))
         } catch (exception: Exception) {
-            partialStateSender.send(HomePartialState.ShowGenericError(exception))
+            emit(HomeTransform.AddAction(HomeAction.ShowGenericError(exception)))
+            throw exception
         }
-    }
-
-    override fun tryReduce(
-        state: HomeState,
-        partialState: HomePartialState
-    ): Result<HomeState> = when (partialState) {
-        is HomePartialState.ShowFullscreenError -> reduceErrorCaught(partialState)
-        is HomePartialState.ChangePermissionsAndWorklogs -> reduceChangePermissionsAndWorklogs(state, partialState)
-        is HomePartialState.AskForPermission -> reduceAskedForPermission(state, partialState)
-        is HomePartialState.ShowGenericError -> reduceGenericErrorHappened(state, partialState)
-        is HomePartialState.ShowWarningAboutPermissions -> reduceShowWarningAboutPermissions(state, partialState)
-        HomePartialState.OpenQrCodeScan -> reduceOpenQrCodeScan(state)
-    }
-
-    private fun reduceErrorCaught(partialState: HomePartialState.ShowFullscreenError) = Result.success(HomeState.Error(partialState.throwable))
-
-    private fun reduceChangePermissionsAndWorklogs(state: HomeState, partialState: HomePartialState.ChangePermissionsAndWorklogs): Result<HomeState> {
-        val homeListItems = buildList {
-            partialState.permissionsAndWorklogs.permissions.forEach {
-                add(HomeListItem.PermissionListItem(it))
-            }
-
-            if (partialState.permissionsAndWorklogs.numberOfPendingWorklogs > 0) {
-                add(HomeListItem.PendingSynchronizationListItem(partialState.permissionsAndWorklogs.numberOfPendingWorklogs))
-            }
-        }
-
-        if (state is HomeState.Loaded) {
-            return Result.success(state.copy(homeListItems = homeListItems))
-        }
-
-        return Result.success(HomeState.Loaded(partialState.version, homeListItems, emptyList(), null))
-    }
-
-    private fun reduceAskedForPermission(state: HomeState, partialState: HomePartialState.AskForPermission) = requireState<HomeState, HomeState.Loaded>(state) {
-        copy(
-            actions = actions.newInsertingActions(HomeAction.AskForPermission(partialState.permissionType))
-        )
-    }
-
-    private fun reduceGenericErrorHappened(state: HomeState, partialState: HomePartialState.ShowGenericError) = requireState<HomeState, HomeState.Loaded>(state) {
-        copy(actionError = partialState.throwable)
-    }
-
-    private fun reduceShowWarningAboutPermissions(state: HomeState, partialState: HomePartialState.ShowWarningAboutPermissions) = requireState<HomeState, HomeState.Loaded>(state) {
-        copy(
-            actions = actions.newInsertingActions(HomeAction.ShowWarningAboutPermissions(partialState.permissionTypes))
-        )
-    }
-
-    private fun reduceOpenQrCodeScan(state: HomeState) = requireState<HomeState, HomeState.Loaded>(state) {
-        copy(
-            actions = actions.newInsertingActions(HomeAction.OpenQrCodeScan())
-        )
     }
 }

@@ -1,3 +1,3 @@
 package org.xtras.mvi
 
-public interface State
+public interface State : Loggable

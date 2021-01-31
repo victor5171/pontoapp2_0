@@ -7,16 +7,14 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import br.com.gerencioservicos.home.ui.PermissionNameTranslator
 import br.com.gerencioservicos.home.viewmodel.HomeAction
-import br.com.gerencioservicos.home.viewmodel.HomeIntention
+import br.com.gerencioservicos.home.viewmodel.HomeIntent
 import br.com.gerencioservicos.home.viewmodel.HomeState
 import br.com.gerencioservicos.home.viewmodel.HomeViewModel
 import br.com.gerencioservicos.repository.permissions.PermissionType
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.coroutines.flow.collect
 import org.koin.android.viewmodel.ext.android.viewModel
 
 internal class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -29,7 +27,7 @@ internal class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val requestMultiplePermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
         if (it.values.all { accepted -> accepted }) {
-            viewModel.executeIntention(HomeIntention.AddWorklog)
+            viewModel.execute(HomeIntent.AddWorklog)
         }
     }
 
@@ -39,16 +37,14 @@ internal class HomeFragment : Fragment(R.layout.fragment_home) {
         setupRecyclerView()
 
         buttonAddWorklog.setOnClickListener {
-            viewModel.executeIntention(HomeIntention.AddWorklog)
+            viewModel.execute(HomeIntent.AddWorklog)
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.state.collect {
-                when (it) {
-                    HomeState.Loading -> {}
-                    is HomeState.Error -> {}
-                    is HomeState.Loaded -> setLoadedState(it)
-                }
+        viewModel.state.observe(viewLifecycleOwner) {
+            when (it) {
+                HomeState.Loading -> {}
+                is HomeState.Error -> {}
+                is HomeState.Loaded -> setLoadedState(it)
             }
         }
     }
@@ -73,9 +69,10 @@ internal class HomeFragment : Fragment(R.layout.fragment_home) {
         is HomeAction.AskForPermission -> askForPermission(homeAction)
         is HomeAction.ShowWarningAboutPermissions -> showWarningAboutPermissions(homeAction)
         is HomeAction.OpenQrCodeScan -> TODO()
+        is HomeAction.ShowGenericError -> showGenericErrorMessage()
     }
 
-    private fun showWarningAboutPermissions(showWarningAboutPermissions: HomeAction.ShowWarningAboutPermissions) = showWarningAboutPermissions.executeAndConsume {
+    private fun showWarningAboutPermissions(showWarningAboutPermissions: HomeAction.ShowWarningAboutPermissions) {
         val permissionNames = PermissionNameTranslator.translateAllWithComma(requireContext(), showWarningAboutPermissions.permissionTypes)
 
         val permissionIds = showWarningAboutPermissions.permissionTypes.map(this::getPermissionId).toTypedArray()
@@ -91,7 +88,16 @@ internal class HomeFragment : Fragment(R.layout.fragment_home) {
             .show()
     }
 
-    private fun askForPermission(askForPermissionAction: HomeAction.AskForPermission) = askForPermissionAction.executeAndConsume {
+    private fun showGenericErrorMessage() {
+        AlertDialog
+            .Builder(requireContext())
+            .setTitle(R.string.error_title)
+            .setMessage(R.string.error_message)
+            .setPositiveButton(R.string.ok, null)
+            .show()
+    }
+
+    private fun askForPermission(askForPermissionAction: HomeAction.AskForPermission) {
         val permissionId = getPermissionId(askForPermissionAction.permissionType)
         requestPermissionLauncher.launch(permissionId)
     }
@@ -102,6 +108,6 @@ internal class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun onPermissionClick(permissionType: PermissionType) {
-        viewModel.executeIntention(HomeIntention.ClickedOnPermission(permissionType))
+        viewModel.execute(HomeIntent.ClickedOnPermission(permissionType))
     }
 }

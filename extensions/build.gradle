@@ -1,0 +1,24 @@
+apply plugin: 'kotlin'
+
+compileKotlin {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    kotlinOptions {
+        freeCompilerArgs = [
+                KotlinCompilerArgs.explicitApi,
+                KotlinCompilerArgs.allowExperimentalCoroutinesApi
+        ]
+
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    implementation Kotlin.stdLib
+    implementation Kotlin.coroutinesCore
+}
