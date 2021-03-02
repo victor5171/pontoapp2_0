@@ -16,6 +16,17 @@ compileKotlin {
 
 test {
     useJUnitPlatform()
+    testLogging.showStandardStreams = true
+}
+
+compileTestKotlin {
+    kotlinOptions {
+        freeCompilerArgs = [
+                KotlinCompilerArgs.allowExperimentalCoroutinesApi
+        ]
+
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {

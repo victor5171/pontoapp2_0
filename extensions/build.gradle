@@ -16,6 +16,7 @@ compileKotlin {
 
 test {
     useJUnitPlatform()
+    testLogging.showStandardStreams = true
 }
 
 dependencies {

@@ -19,6 +19,7 @@ compileKotlin {
 
 test {
     useJUnitPlatform()
+    testLogging.showStandardStreams = true
 }
 
 compileTestKotlin {
@@ -35,4 +36,5 @@ dependencies {
 
     testImplementation Tests.mockk
     testImplementation Tests.kotestRunner
+    testImplementation Kotlin.coroutinesTest
 }

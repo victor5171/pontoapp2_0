@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         google()
-        jcenter()
         maven {
             url "https://plugins.gradle.org/m2/"
         }
@@ -9,6 +8,7 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:4.1.2"
+        classpath "com.adarshr:gradle-test-logger-plugin:2.1.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${Kotlin.VERSION}"
         classpath Ktlint.gradlePlugin
         classpath Navigation.safeArgsPlugin
@@ -18,10 +18,13 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
 
     apply plugin: "org.jlleitschuh.gradle.ktlint"
+    apply plugin: "com.adarshr.test-logger"
 }
 
 task clean(type: Delete) {
