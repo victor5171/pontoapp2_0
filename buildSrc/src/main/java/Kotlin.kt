@@ -2,10 +2,10 @@
 
 object Kotlin {
 
-    const val VERSION = "1.4.21"
+    const val VERSION = "1.4.30"
 
     private object Versions {
-        const val coroutinesVersion = "1.4.0"
+        const val coroutinesVersion = "1.4.2"
     }
 
     const val stdLib = "org.jetbrains.kotlin:kotlin-stdlib:$VERSION"

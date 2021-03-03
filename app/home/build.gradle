@@ -16,6 +16,15 @@ android {
         consumerProguardFiles "consumer-rules.pro"
     }
 
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerVersion Kotlin.VERSION
+        kotlinCompilerExtensionVersion Compose.VERSION
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -38,7 +47,8 @@ android {
         freeCompilerArgs = [
             KotlinCompilerArgs.allowResultReturnType,
             KotlinCompilerArgs.allowExperimentalCoroutinesApi,
-            KotlinCompilerArgs.allowExperimentalStdlibApi
+            KotlinCompilerArgs.allowExperimentalStdlibApi,
+            KotlinCompilerArgs.jvmDefault
         ]
 
         jvmTarget = JavaVersion.VERSION_1_8
@@ -65,6 +75,7 @@ dependencies {
     implementation Android.constraintLayout
     implementation Android.material
     implementation Android.activity
+    implementation Android.activityCompose
     implementation Android.fragment
     implementation Koin.viewModel
     implementation Externals.polyadapter

@@ -10,7 +10,8 @@ compileKotlin {
             KotlinCompilerArgs.allowFlowPreview,
             KotlinCompilerArgs.allowResultReturnType,
             KotlinCompilerArgs.allowExperimentalStdlibApi,
-            KotlinCompilerArgs.explicitApi
+            KotlinCompilerArgs.explicitApi,
+            KotlinCompilerArgs.jvmDefault
         ]
 
         jvmTarget = JavaVersion.VERSION_1_8

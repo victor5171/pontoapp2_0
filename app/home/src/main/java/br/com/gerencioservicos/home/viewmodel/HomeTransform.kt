@@ -1,6 +1,5 @@
 package br.com.gerencioservicos.home.viewmodel
 
-import br.com.gerencioservicos.repository.permissions.PermissionType
 import br.com.gerencioservicos.usecases.PermissionsAndWorklogs
 import org.xtras.mvi.Actions
 import org.xtras.mvi.requirements.requireAndReduceState
