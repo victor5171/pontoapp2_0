@@ -1,27 +1,33 @@
 package br.com.gerencioservicos.home
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.material.Scaffold
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
+import br.com.gerencioservicos.home.ui.AddWorklogFAB
+import br.com.gerencioservicos.home.ui.LoadedScreen
 import br.com.gerencioservicos.home.ui.PermissionNameTranslator
 import br.com.gerencioservicos.home.viewmodel.HomeAction
 import br.com.gerencioservicos.home.viewmodel.HomeIntent
 import br.com.gerencioservicos.home.viewmodel.HomeState
 import br.com.gerencioservicos.home.viewmodel.HomeViewModel
 import br.com.gerencioservicos.repository.permissions.PermissionType
-import kotlinx.android.synthetic.main.fragment_home.*
+import br.com.gerencioservicos.styles.compose.AppTheme
+import br.com.gerencioservicos.styles.compose.ErrorScreen
+import br.com.gerencioservicos.styles.compose.LoadingScreen
 import org.koin.android.viewmodel.ext.android.viewModel
 
-internal class HomeFragment : Fragment(R.layout.fragment_home) {
+internal class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModel()
-
-    private val adapter = HomeAdapterBuilder.buildForListAdapter(this::onPermissionClick)
 
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
 
@@ -31,38 +37,38 @@ internal class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(inflater.context).apply {
+            setContent {
+                AppTheme {
+                    val state by viewModel.state.collectAsState()
 
-        setupRecyclerView()
-
-        buttonAddWorklog.setOnClickListener {
-            viewModel.execute(HomeIntent.AddWorklog)
-        }
-
-        viewModel.state.observe(viewLifecycleOwner) {
-            when (it) {
-                HomeState.Loading -> {}
-                is HomeState.Error -> {}
-                is HomeState.Loaded -> setLoadedState(it)
+                    Scaffold(
+                        floatingActionButton = {
+                            if (state is HomeState.Loaded) {
+                                AddWorklogFAB(onClick = { viewModel.execute(HomeIntent.AddWorklog) })
+                            }
+                        }
+                    ) {
+                        @Suppress("UnnecessaryVariable")
+                        when(val smartCastState = state) {
+                            is HomeState.Error -> ErrorScreen(
+                                retryOnClick = { viewModel.execute(HomeIntent.Load) }
+                            )
+                            is HomeState.Loaded -> LoadedScreen(
+                                loadedState = smartCastState,
+                                onItemSelected = { viewModel.execute(HomeIntent.ClickedOnPermission(it)) }
+                            )
+                            HomeState.Loading -> LoadingScreen()
+                        }
+                    }
+                }
             }
         }
-    }
-
-    private fun setupRecyclerView() {
-        recyclerView.adapter = adapter
-
-        val divider = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
-        recyclerView.addItemDecoration(divider)
-    }
-
-    private fun setLoadedState(homeState: HomeState.Loaded) {
-        adapter.submitList(homeState.homeListItems)
-
-        @SuppressLint("SetTextI18n")
-        textViewVersion.text = "v${homeState.version}"
-
-        homeState.actions.forEach(this::parseAction)
     }
 
     private fun parseAction(homeAction: HomeAction) = when (homeAction) {
@@ -105,9 +111,5 @@ internal class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun getPermissionId(permissionType: PermissionType) = when (permissionType) {
         PermissionType.CAMERA -> Manifest.permission.CAMERA
         PermissionType.GPS -> Manifest.permission.ACCESS_FINE_LOCATION
-    }
-
-    private fun onPermissionClick(permissionType: PermissionType) {
-        viewModel.execute(HomeIntent.ClickedOnPermission(permissionType))
     }
 }

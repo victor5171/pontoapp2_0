@@ -29,7 +29,7 @@ internal class HomeViewModel(
         intentExecutor = this::executeIntent
     )
 
-    val state = reducer.state.asLiveData()
+    val state = reducer.state
 
     init {
         execute(HomeIntent.Load)
@@ -51,12 +51,17 @@ internal class HomeViewModel(
     private fun executeLoad(jobTerminator: JobTerminator<HomeIntent>) = flow {
         jobTerminator.kill(HomeIntent.Load)
 
-        emitAll(
-            listenToPermissionsAndWorklogs().map {
-                val version = retrieveVersion()
-                HomeTransform.ChangePermissionsAndWorklogs(version, it)
-            }
-        )
+        try {
+            emitAll(
+                listenToPermissionsAndWorklogs().map {
+                    val version = retrieveVersion()
+                    HomeTransform.ChangePermissionsAndWorklogs(version, it)
+                }
+            )
+        }
+        catch(throwable: Throwable) {
+            emit(HomeTransform.ShowFullscreenError(throwable))
+        }
     }
 
     private fun executeClickedOnPermission(intent: HomeIntent.ClickedOnPermission) = flow {

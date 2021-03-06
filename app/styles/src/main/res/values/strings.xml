@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="generic_error_message">Um erro desconhecido ocorreu!\nUm relatório foi enviado para que possamos resolver esse problema o mais rápido possível!</string>
+    <string name="retry">Tentar novamente</string>
+    <string name="loading">Carregando…</string>
+</resources>

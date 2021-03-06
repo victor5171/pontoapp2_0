@@ -17,6 +17,24 @@ android {
         consumerProguardFiles "consumer-rules.pro"
     }
 
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerVersion Kotlin.VERSION
+        kotlinCompilerExtensionVersion Compose.VERSION
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -28,4 +46,6 @@ android {
 dependencies {
     implementation Android.appCompat
     implementation Android.material
+    implementation Compose.uiTooling
+    implementation Compose.material
 }

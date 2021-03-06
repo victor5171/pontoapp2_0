@@ -79,6 +79,11 @@ dependencies {
     implementation Android.fragment
     implementation Koin.viewModel
     implementation Externals.polyadapter
+    implementation Compose.uiTooling
+    implementation Compose.foundation
+    implementation Compose.material
+    implementation Compose.runtimeLiveData
+    implementation Compose.constraintLayout
 
     testImplementation Kotlin.coroutinesTest
     testImplementation Tests.mockk
