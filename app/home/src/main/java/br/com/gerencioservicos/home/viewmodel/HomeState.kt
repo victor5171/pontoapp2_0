@@ -9,7 +9,6 @@ internal sealed class HomeState : State {
     data class Loaded(
         val version: String,
         val homeListItems: List<HomeListItem>,
-        val actions: Actions<HomeAction>,
-        val actionError: Throwable?
+        val actions: Actions<HomeAction>
     ) : HomeState()
 }

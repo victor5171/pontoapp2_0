@@ -1,4 +1,4 @@
-package br.com.gerencioservicos.styles.compose
+package br.com.gerencioservicos.styles.compose.widgets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -20,6 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import br.com.gerencioservicos.styles.R
+import br.com.gerencioservicos.styles.compose.Dimens
+import br.com.gerencioservicos.styles.compose.Paddings
 
 @Preview
 @Composable

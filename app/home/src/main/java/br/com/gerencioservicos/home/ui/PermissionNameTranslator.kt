@@ -11,7 +11,8 @@ internal object PermissionNameTranslator {
     }
 
     fun translateAllWithComma(context: Context, permissionType: Collection<PermissionType>): String {
-        return permissionType.joinToString(separator = ",") {
+        val separator = if (permissionType.size <= 2) { " ${context.getString(R.string.two_items_separator)}" } else ","
+        return permissionType.joinToString(separator = "$separator ") {
             context.getString(translate(it))
         }
     }

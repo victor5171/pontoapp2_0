@@ -6,11 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.compose.material.Scaffold
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.Fragment
 import br.com.gerencioservicos.home.ui.AddWorklogFAB
 import br.com.gerencioservicos.home.ui.LoadedScreen
@@ -21,8 +22,9 @@ import br.com.gerencioservicos.home.viewmodel.HomeState
 import br.com.gerencioservicos.home.viewmodel.HomeViewModel
 import br.com.gerencioservicos.repository.permissions.PermissionType
 import br.com.gerencioservicos.styles.compose.AppTheme
-import br.com.gerencioservicos.styles.compose.ErrorScreen
-import br.com.gerencioservicos.styles.compose.LoadingScreen
+import br.com.gerencioservicos.styles.compose.widgets.AppAlertDialog
+import br.com.gerencioservicos.styles.compose.widgets.ErrorScreen
+import br.com.gerencioservicos.styles.compose.widgets.LoadingScreen
 import org.koin.android.viewmodel.ext.android.viewModel
 
 internal class HomeFragment : Fragment() {
@@ -66,41 +68,47 @@ internal class HomeFragment : Fragment() {
                             HomeState.Loading -> LoadingScreen()
                         }
                     }
+
+                    (state as? HomeState.Loaded)?.actions?.forEach {
+                        ParseAction(homeAction = it)
+                    }
                 }
             }
         }
     }
 
-    private fun parseAction(homeAction: HomeAction) = when (homeAction) {
+    @Composable
+    private fun ParseAction(homeAction: HomeAction) = when (homeAction) {
         is HomeAction.AskForPermission -> askForPermission(homeAction)
-        is HomeAction.ShowWarningAboutPermissions -> showWarningAboutPermissions(homeAction)
+        is HomeAction.ShowWarningAboutPermissions -> ShowWarningAboutPermissions(homeAction)
         is HomeAction.OpenQrCodeScan -> TODO()
-        is HomeAction.ShowGenericError -> showGenericErrorMessage()
+        is HomeAction.ShowGenericError -> ShowGenericErrorMessage(homeAction)
     }
 
-    private fun showWarningAboutPermissions(showWarningAboutPermissions: HomeAction.ShowWarningAboutPermissions) {
+    @Composable
+    private fun ShowWarningAboutPermissions(showWarningAboutPermissions: HomeAction.ShowWarningAboutPermissions) {
         val permissionNames = PermissionNameTranslator.translateAllWithComma(requireContext(), showWarningAboutPermissions.permissionTypes)
 
         val permissionIds = showWarningAboutPermissions.permissionTypes.map(this::getPermissionId).toTypedArray()
 
-        AlertDialog
-            .Builder(requireContext())
-            .setTitle(R.string.give_permissions_warning_title)
-            .setMessage(getString(R.string.give_permissions_warning_text, permissionNames))
-            .setNegativeButton(R.string.cancel, null)
-            .setPositiveButton(R.string.ok) { _, _ ->
-                requestMultiplePermissionLauncher.launch(permissionIds)
-            }
-            .show()
+        AppAlertDialog(
+            key = showWarningAboutPermissions,
+            title = stringResource(R.string.give_permissions_warning_title),
+            message = stringResource(R.string.give_permissions_warning_text, permissionNames),
+            confirmText = stringResource(R.string.ok),
+            cancelText = stringResource(R.string.cancel),
+            onConfirm = { requestMultiplePermissionLauncher.launch(permissionIds) }
+        )
     }
 
-    private fun showGenericErrorMessage() {
-        AlertDialog
-            .Builder(requireContext())
-            .setTitle(R.string.error_title)
-            .setMessage(R.string.error_message)
-            .setPositiveButton(R.string.ok, null)
-            .show()
+    @Composable
+    private fun ShowGenericErrorMessage(showGenericError: HomeAction.ShowGenericError) {
+        AppAlertDialog(
+            key = showGenericError,
+            title = stringResource(R.string.error_title),
+            message = stringResource(R.string.error_message),
+            confirmText = stringResource(R.string.ok)
+        )
     }
 
     private fun askForPermission(askForPermissionAction: HomeAction.AskForPermission) {

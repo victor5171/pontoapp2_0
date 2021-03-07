@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion SdkConfig.COMPILE_SDK_VERSION
@@ -21,7 +20,6 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion Kotlin.VERSION
         kotlinCompilerExtensionVersion Compose.VERSION
     }
 

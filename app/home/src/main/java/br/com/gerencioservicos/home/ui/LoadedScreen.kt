@@ -14,8 +14,8 @@ import br.com.gerencioservicos.home.viewmodel.HomeListItem
 import br.com.gerencioservicos.home.viewmodel.HomeState
 import br.com.gerencioservicos.repository.permissions.Permission
 import br.com.gerencioservicos.repository.permissions.PermissionType
-import br.com.gerencioservicos.styles.compose.AppDivider
 import br.com.gerencioservicos.styles.compose.Paddings
+import br.com.gerencioservicos.styles.compose.widgets.AppDivider
 import org.xtras.mvi.Actions
 
 @Composable
@@ -27,16 +27,21 @@ internal fun LoadedScreen(loadedState: HomeState.Loaded, onItemSelected: (Permis
 }
 
 @Composable
-private fun ColumnScope.List(listItems: List<HomeListItem>, onItemSelected: (PermissionType) -> Unit) {
+private fun ColumnScope.List(
+    listItems: List<HomeListItem>,
+    onItemSelected: (PermissionType) -> Unit
+) {
     LazyColumn(
         modifier = Modifier.weight(1.0f),
     ) {
         itemsIndexed(listItems) { index, item ->
-            when(item) {
+            when (item) {
                 is HomeListItem.PendingSynchronizationListItem -> TODO()
-                is HomeListItem.PermissionListItem -> PermissionItemColumn(item.permission, onClick = {
-                    onItemSelected(item.permission.permissionType)
-                })
+                is HomeListItem.PermissionListItem -> PermissionItemColumn(
+                    item.permission,
+                    onClick = {
+                        onItemSelected(item.permission.permissionType)
+                    })
             }
 
             if (index < listItems.size - 1) {
@@ -50,7 +55,11 @@ private fun ColumnScope.List(listItems: List<HomeListItem>, onItemSelected: (Per
 @Composable
 private fun Version(version: String = "1.0.0") {
     Text(
-        modifier = Modifier.padding(start = Paddings.Tiny, top = Paddings.Tiny, bottom = Paddings.Tiny),
+        modifier = Modifier.padding(
+            start = Paddings.Tiny,
+            top = Paddings.Tiny,
+            bottom = Paddings.Tiny
+        ),
         text = version,
         style = MaterialTheme.typography.body1
     )
@@ -62,9 +71,15 @@ private fun LoadedScreenPreview() {
     LoadedScreen(
         loadedState = HomeState.Loaded(
             version = "1.0.0",
-            homeListItems = listOf(HomeListItem.PermissionListItem(Permission(PermissionType.CAMERA, true))),
-            actions = Actions(),
-            actionError = null
+            homeListItems = listOf(
+                HomeListItem.PermissionListItem(
+                    Permission(
+                        PermissionType.CAMERA,
+                        true
+                    )
+                )
+            ),
+            actions = Actions()
         ),
         onItemSelected = {}
     )

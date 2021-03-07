@@ -29,7 +29,7 @@ internal sealed class HomeTransform : Transform<HomeState> {
                 return currentState.copy(homeListItems = homeListItems)
             }
 
-            return HomeState.Loaded(version, homeListItems, Actions(), null)
+            return HomeState.Loaded(version, homeListItems, Actions())
         }
     }
 

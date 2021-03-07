@@ -1,4 +1,4 @@
-package br.com.gerencioservicos.styles.compose
+package br.com.gerencioservicos.styles.compose.widgets
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import br.com.gerencioservicos.styles.R
+import br.com.gerencioservicos.styles.compose.Dimens
+import br.com.gerencioservicos.styles.compose.Paddings
 
 @Preview
 @Composable
