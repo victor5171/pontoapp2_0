@@ -1,4 +1,4 @@
-package br.com.gerencioservicos.usecases
+package br.com.gerencioservicos.usecases.entities
 
 import br.com.gerencioservicos.repository.permissions.Permission
 

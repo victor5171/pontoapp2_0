@@ -26,6 +26,4 @@ object Android {
     const val activity = "androidx.activity:activity-ktx:${Versions.activity}"
     const val activityCompose = "androidx.activity:activity-compose:${Versions.activity}"
     const val fragment = "androidx.fragment:fragment:${Versions.fragment}"
-    const val cameraCamera2 = "androidx.camera:camera-camera2:${Versions.camera}"
-    const val cameraView = "androidx.camera:camera-view:${Versions.cameraView}"
 }

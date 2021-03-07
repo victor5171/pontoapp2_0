@@ -30,14 +30,28 @@ android {
     }
 
     kotlinOptions {
+        freeCompilerArgs = [
+            KotlinCompilerArgs.jvmDefault
+        ]
+
         jvmTarget = JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
+    implementation project(Internals.mvi)
+    implementation project(Internals.usecases)
+    implementation project(Internals.repository)
+    implementation project(Internals.styles)
+
     implementation Kotlin.stdLib
-    implementation Android.cameraCamera2
-    implementation Android.cameraView
+    implementation Koin.viewModel
     implementation Android.fragment
     implementation Android.constraintLayout
+    implementation Android.lifecycleViewModelKtx
+    implementation Android.lifecycleLiveDataKtx
+    implementation Camera.camera2
+    implementation Camera.lifecycle
+    implementation Camera.view
+    implementation MLKit.barcodeScanner
 }

@@ -1,7 +1,6 @@
 package br.com.gerencioservicos.home.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import br.com.gerencioservicos.usecases.GetPendingPermissions
 import br.com.gerencioservicos.usecases.IsPermissionAllowed

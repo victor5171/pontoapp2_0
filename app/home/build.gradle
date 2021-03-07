@@ -58,6 +58,10 @@ android {
     }
 }
 
+configurations {
+    debugImplementation.exclude group: "junit", module: "junit"
+}
+
 dependencies {
     implementation project(Internals.mvi)
     implementation project(Internals.usecases)
@@ -66,17 +70,12 @@ dependencies {
 
     implementation Kotlin.stdLib
     implementation Android.lifecycleViewModelKtx
-    implementation Android.lifecycleRuntimeKtx
-    implementation Android.lifecycleLiveDataKtx
     implementation Android.appCompat
-    implementation Android.recyclerView
-    implementation Android.constraintLayout
     implementation Android.material
     implementation Android.activity
     implementation Android.activityCompose
     implementation Android.fragment
     implementation Koin.viewModel
-    implementation Externals.polyadapter
     implementation Compose.uiTooling
     implementation Compose.foundation
     implementation Compose.material

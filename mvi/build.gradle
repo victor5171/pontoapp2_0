@@ -34,7 +34,6 @@ dependencies {
     implementation Android.lifecycleLiveDataKtx
 
     testImplementation project(Internals.tests_extensions)
-
     testImplementation Tests.mockk
     testImplementation Tests.kotestRunner
     testImplementation Kotlin.coroutinesTest

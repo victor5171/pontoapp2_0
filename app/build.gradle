@@ -43,11 +43,14 @@ dependencies {
     implementation project(Internals.navigation)
     implementation project(Internals.styles)
     implementation project(Internals.home)
+    implementation project(Internals.qrcode_scanner)
 
     implementation Kotlin.stdLib
     implementation Android.appCompat
     implementation Navigation.navigationFragment
     implementation Koin.android
+
+    debugImplementation Externals.leakCanary
 
     testImplementation Tests.jUnit4
     testImplementation Koin.test

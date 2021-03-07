@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.Fragment
+import br.com.gerencioservicos.home.navigation.HomeNavigation
 import br.com.gerencioservicos.home.ui.AddWorklogFAB
 import br.com.gerencioservicos.home.ui.LoadedScreen
 import br.com.gerencioservicos.home.ui.PermissionNameTranslator
@@ -25,9 +26,13 @@ import br.com.gerencioservicos.styles.compose.AppTheme
 import br.com.gerencioservicos.styles.compose.widgets.AppAlertDialog
 import br.com.gerencioservicos.styles.compose.widgets.ErrorScreen
 import br.com.gerencioservicos.styles.compose.widgets.LoadingScreen
+import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 internal class HomeFragment : Fragment() {
+
+    private val navigation: HomeNavigation by inject { parametersOf(this) }
 
     private val viewModel: HomeViewModel by viewModel()
 
@@ -81,7 +86,7 @@ internal class HomeFragment : Fragment() {
     private fun ParseAction(homeAction: HomeAction) = when (homeAction) {
         is HomeAction.AskForPermission -> askForPermission(homeAction)
         is HomeAction.ShowWarningAboutPermissions -> ShowWarningAboutPermissions(homeAction)
-        is HomeAction.OpenQrCodeScan -> TODO()
+        is HomeAction.OpenQrCodeScan -> navigation.goToQrCode()
         is HomeAction.ShowGenericError -> ShowGenericErrorMessage(homeAction)
     }
 

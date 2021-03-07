@@ -4,10 +4,12 @@ import br.com.gerencioservicos.usecases.GetPendingPermissions
 import br.com.gerencioservicos.usecases.IsPermissionAllowed
 import br.com.gerencioservicos.usecases.ListenToPermissionsAndWorklogs
 import br.com.gerencioservicos.usecases.RetrieveVersion
+import br.com.gerencioservicos.usecases.TryDecodeImage
 import br.com.gerencioservicos.usecases.impl.GetPendingPermissionsImpl
 import br.com.gerencioservicos.usecases.impl.IsPermissionAllowedImpl
 import br.com.gerencioservicos.usecases.impl.ListenToPermissionsAndWorklogsImpl
 import br.com.gerencioservicos.usecases.impl.RetrieveVersionImpl
+import br.com.gerencioservicos.usecases.impl.TryDecodeImageImpl
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -32,6 +34,11 @@ object UseCasesModule {
         }
         single<RetrieveVersion> {
             RetrieveVersionImpl(get(named(VERSION_KEY)))
+        }
+        single<TryDecodeImage> {
+            TryDecodeImageImpl(
+                qrcodeRepository = get()
+            )
         }
     }
 }

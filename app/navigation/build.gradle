@@ -29,6 +29,10 @@ android {
     }
 
     kotlinOptions {
+        freeCompilerArgs = [
+                KotlinCompilerArgs.jvmDefault
+        ]
+
         jvmTarget = JavaVersion.VERSION_1_8
     }
 }
@@ -39,4 +43,5 @@ dependencies {
 
     implementation Kotlin.stdLib
     implementation Navigation.navigationFragment
+    implementation Koin.core
 }

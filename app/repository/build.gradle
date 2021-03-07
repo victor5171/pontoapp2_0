@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-parcelize'
 
 android {
     compileSdkVersion SdkConfig.COMPILE_SDK_VERSION
@@ -35,8 +36,10 @@ android {
 dependencies {
     implementation Kotlin.stdLib
     implementation Kotlin.coroutinesCore
+    implementation Kotlin.playServicesCoroutines
     implementation Android.appCompat
     implementation Koin.android
+    implementation MLKit.barcodeScanner
 
     testImplementation Tests.jUnit4
     testImplementation Kotlin.testJunit
