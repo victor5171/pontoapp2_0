@@ -26,12 +26,12 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = SdkConfig.JAVA_VERSION
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility SdkConfig.JAVA_VERSION
+        targetCompatibility SdkConfig.JAVA_VERSION
     }
 
     buildTypes {
@@ -45,6 +45,7 @@ android {
 dependencies {
     implementation Android.appCompat
     implementation Android.material
-    implementation Compose.uiTooling
     implementation Compose.material
+
+    debugImplementation Compose.uiTooling
 }

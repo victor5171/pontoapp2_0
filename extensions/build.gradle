@@ -1,8 +1,8 @@
 apply plugin: 'kotlin'
 
 compileKotlin {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = SdkConfig.JAVA_VERSION
+    targetCompatibility = SdkConfig.JAVA_VERSION
 
     kotlinOptions {
         freeCompilerArgs = [
@@ -10,7 +10,7 @@ compileKotlin {
                 KotlinCompilerArgs.allowExperimentalCoroutinesApi
         ]
 
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = SdkConfig.JAVA_VERSION
     }
 }
 

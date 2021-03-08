@@ -49,12 +49,12 @@ android {
             KotlinCompilerArgs.jvmDefault
         ]
 
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = SdkConfig.JAVA_VERSION
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility SdkConfig.JAVA_VERSION
+        targetCompatibility SdkConfig.JAVA_VERSION
     }
 }
 
@@ -76,11 +76,12 @@ dependencies {
     implementation Android.activityCompose
     implementation Android.fragment
     implementation Koin.viewModel
-    implementation Compose.uiTooling
     implementation Compose.foundation
     implementation Compose.material
     implementation Compose.runtimeLiveData
     implementation Compose.constraintLayout
+
+    debugImplementation Compose.uiTooling
 
     testImplementation Kotlin.coroutinesTest
     testImplementation Tests.mockk
