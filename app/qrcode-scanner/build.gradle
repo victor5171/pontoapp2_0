@@ -17,6 +17,14 @@ android {
         consumerProguardFiles "consumer-rules.pro"
     }
 
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion Compose.VERSION
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -49,9 +57,13 @@ dependencies {
     implementation Android.fragment
     implementation Android.constraintLayout
     implementation Android.lifecycleViewModelKtx
-    implementation Android.lifecycleLiveDataKtx
+    implementation Android.lifecycleRuntimeKtx
     implementation Camera.camera2
     implementation Camera.lifecycle
     implementation Camera.view
-    implementation MLKit.barcodeScanner
+    implementation Compose.material
+    implementation Compose.runtimeLiveData
+
+    debugImplementation Compose.uiTooling
+    debugImplementation Kotlin.reflect
 }

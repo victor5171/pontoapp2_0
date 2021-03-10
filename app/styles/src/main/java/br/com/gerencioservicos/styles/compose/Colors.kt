@@ -39,4 +39,6 @@ object Colors {
     )
 
     internal val dividerColor = Color(0xff999999)
+
+    val transparentWhite = Color(0xBFFFFFFF)
 }

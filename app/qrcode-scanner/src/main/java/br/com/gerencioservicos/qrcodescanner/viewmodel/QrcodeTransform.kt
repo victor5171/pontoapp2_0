@@ -1,5 +1,6 @@
 package br.com.gerencioservicos.qrcodescanner.viewmodel
 
+import androidx.camera.core.ImageAnalysis
 import br.com.gerencioservicos.repository.qrcode.ScannedCode
 import org.xtras.mvi.transform.Transform
 
@@ -15,22 +16,25 @@ internal sealed class QrcodeTransform : Transform<QrcodeState> {
     }
 
     data class SetScannedCode(
+        private val imageAnalysis: ImageAnalysis,
         private val scannedCode: ScannedCode
     ) : QrcodeTransform() {
 
         override fun reduce(currentState: QrcodeState): QrcodeState {
-            if (currentState is QrcodeState.CapturedCode) {
+            if (currentState is QrcodeState.ShowingCamera.CapturedCode) {
                 throw UnsupportedOperationException("There's already a captured code!")
             }
 
-            return QrcodeState.CapturedCode(scannedCode, currentState.actions)
+            return QrcodeState.ShowingCamera.CapturedCode(imageAnalysis, scannedCode, currentState.actions)
         }
     }
 
-    object SetCapturing : QrcodeTransform() {
+    data class SetCapturing(
+        private val imageAnalysis: ImageAnalysis
+    ) : QrcodeTransform() {
 
         override fun reduce(currentState: QrcodeState): QrcodeState {
-            return QrcodeState.Capturing(currentState.actions)
+            return QrcodeState.ShowingCamera.Capturing(imageAnalysis, currentState.actions)
         }
     }
 }

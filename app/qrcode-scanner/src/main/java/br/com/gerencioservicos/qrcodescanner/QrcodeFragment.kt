@@ -1,76 +1,65 @@
 package br.com.gerencioservicos.qrcodescanner
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.PreviewView
-import androidx.core.content.ContextCompat
+import android.view.ViewGroup
+import androidx.compose.foundation.layout.Box
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import br.com.gerencioservicos.qrcodescanner.ui.CapturedCodeScreen
+import br.com.gerencioservicos.qrcodescanner.ui.CapturingScreen
 import br.com.gerencioservicos.qrcodescanner.viewmodel.QrcodeAction
 import br.com.gerencioservicos.qrcodescanner.viewmodel.QrcodeIntent
 import br.com.gerencioservicos.qrcodescanner.viewmodel.QrcodeState
 import br.com.gerencioservicos.qrcodescanner.viewmodel.QrcodeViewModel
+import br.com.gerencioservicos.styles.compose.AppTheme
+import br.com.gerencioservicos.styles.compose.widgets.LoadingScreen
 import org.koin.android.viewmodel.ext.android.viewModel
-import org.xtras.mvi.Actions
 
-class QrcodeFragment : Fragment(R.layout.fragment_qrcode) {
+class QrcodeFragment : Fragment() {
 
     private val viewModel: QrcodeViewModel by viewModel()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(inflater.context).apply {
+            setContent {
+                AppTheme {
+                    val state by viewModel.state.collectAsState()
 
-        viewModel.state.observe(viewLifecycleOwner) {
-            when (it) {
-                is QrcodeState.CapturedCode -> {
-                }
-                is QrcodeState.Capturing -> {
+                    @Suppress("UnnecessaryVariable")
+                    when (val smartCastState = state) {
+                        is QrcodeState.ShowingCamera -> {
+                            Box {
+                                CapturingScreen(imageAnalysis = smartCastState.imageAnalysis)
+                                if (smartCastState is QrcodeState.ShowingCamera.CapturedCode) {
+                                    CapturedCodeScreen(
+                                        onSubmit = { viewModel.execute(QrcodeIntent.AcceptCode) },
+                                        onCancel = { viewModel.execute(QrcodeIntent.StartCamera) }
+                                    )
+                                }
+                            }
+                        }
+                        is QrcodeState.Loading -> LoadingScreen()
+                    }
+
+                    state.actions.forEach {
+                        ParseAction(action = it)
+                    }
                 }
             }
-
-            handleActions(view, it.actions)
-        }
-
-        viewModel.execute(QrcodeIntent.SetupCamera)
-    }
-
-    private fun handleActions(view: View, actions: Actions<QrcodeAction>) = actions.forEach {
-        when (it) {
-            is QrcodeAction.OpenFaceScanner -> TODO()
-            is QrcodeAction.SetupCamera -> setupCamera(view, it.imageAnalysis)
-            is QrcodeAction.ShowGenericError -> TODO()
         }
     }
 
-    private fun setupCamera(view: View, imageAnalysis: ImageAnalysis) {
-        val prvPreviewCode = view.findViewById<PreviewView>(R.id.prvPreviewCode)
-        val context = requireContext()
-
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-        cameraProviderFuture.addListener({
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-
-            val preview = Preview.Builder()
-                .build()
-                .also {
-                    it.setSurfaceProvider(prvPreviewCode.surfaceProvider)
-                }
-
-            try {
-                cameraProvider.unbindAll()
-
-                cameraProvider.bindToLifecycle(
-                    viewLifecycleOwner,
-                    CameraSelector.DEFAULT_BACK_CAMERA,
-                    preview,
-                    imageAnalysis
-                )
-            } catch (exc: Exception) {
-                throw exc
-            }
-        }, ContextCompat.getMainExecutor(context))
+    @Composable
+    private fun ParseAction(action: QrcodeAction): Unit = when (action) {
+        is QrcodeAction.OpenFaceScanner -> TODO()
     }
 }

@@ -10,7 +10,7 @@ internal sealed class QrcodeIntent : Intent {
         val closeableResource: AutoCloseable
     ) : QrcodeIntent()
 
-    object SetupCamera : QrcodeIntent()
+    object StartCamera : QrcodeIntent()
 
-    object Retry : QrcodeIntent()
+    object AcceptCode : QrcodeIntent()
 }

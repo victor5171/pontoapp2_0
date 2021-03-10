@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="scanned_qrcode_title">Código encontrado!</string>
+    <string name="scanned_qrcode_message">Deseja prosseguir para o próximo passo?</string>
+</resources>

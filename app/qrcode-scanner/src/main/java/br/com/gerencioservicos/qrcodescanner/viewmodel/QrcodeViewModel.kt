@@ -3,7 +3,6 @@ package br.com.gerencioservicos.qrcodescanner.viewmodel
 import android.annotation.SuppressLint
 import androidx.camera.core.ImageAnalysis
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import br.com.gerencioservicos.usecases.TryDecodeImage
 import kotlinx.coroutines.flow.Flow
@@ -28,12 +27,16 @@ internal class QrcodeViewModel(
 
     private val reducer = Reducer(
         coroutineScope = viewModelScope,
-        initialState = QrcodeState.Capturing(Actions()),
+        initialState = QrcodeState.Loading(Actions()),
         logger = logger,
         intentExecutor = this::executeIntent
     )
 
-    val state = reducer.state.asLiveData()
+    val state = reducer.state
+
+    init {
+        execute(QrcodeIntent.StartCamera)
+    }
 
     fun execute(intent: QrcodeIntent) {
         reducer.executeIntent(intent)
@@ -44,36 +47,27 @@ internal class QrcodeViewModel(
         jobTerminator: JobTerminator<QrcodeIntent>
     ) = when (intent) {
         is QrcodeIntent.DecodeImage -> executeDecodeImage(intent)
-        QrcodeIntent.SetupCamera -> executeSetupCamera()
-        QrcodeIntent.Retry -> executeRetry()
+        QrcodeIntent.StartCamera -> executeStartCamera()
+        QrcodeIntent.AcceptCode -> executeAcceptCode()
     }
 
     private fun executeDecodeImage(intent: QrcodeIntent.DecodeImage) = flow<QrcodeTransform> {
-        try {
-            val scannedCode = tryDecodeImage(intent.image, intent.angle, intent.closeableResource)
-                ?: return@flow
+        val scannedCode = tryDecodeImage(intent.image, intent.angle, intent.closeableResource)
+            ?: return@flow
 
-            imageAnalysis.clearAnalyzer()
+        imageAnalysis.clearAnalyzer()
 
-            emit(QrcodeTransform.SetScannedCode(scannedCode))
-        } catch (throwable: Throwable) {
-            emit(QrcodeTransform.AddAction(QrcodeAction.ShowGenericError(throwable)))
-            throw throwable
-        }
+        emit(QrcodeTransform.SetScannedCode(imageAnalysis, scannedCode))
     }
 
-    private fun executeSetupCamera(): Flow<QrcodeTransform> = flow {
-        emit(QrcodeTransform.AddAction(QrcodeAction.SetupCamera(imageAnalysis)))
-
-        if (reducer.state.value is QrcodeState.Capturing) {
-            setAnalyser()
-        }
-    }
-
-    private fun executeRetry() = flow<QrcodeTransform> {
+    private fun executeStartCamera() = flow<QrcodeTransform> {
         setAnalyser()
+        emit(QrcodeTransform.SetCapturing(imageAnalysis))
+    }
 
-        emit(QrcodeTransform.SetCapturing)
+    private fun executeAcceptCode(): Flow<QrcodeTransform> = flow<QrcodeTransform> {
+        val capturedCodeState: QrcodeState.ShowingCamera.CapturedCode = reducer.requireState()
+        emit(QrcodeTransform.AddAction(QrcodeAction.OpenFaceScanner(capturedCodeState.scannedCode)))
     }
 
     @SuppressLint("UnsafeExperimentalUsageError")

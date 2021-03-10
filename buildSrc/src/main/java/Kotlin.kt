@@ -12,5 +12,6 @@ object Kotlin {
     const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutinesVersion}"
     const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutinesVersion}"
     const val playServicesCoroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.coroutinesVersion}"
+    const val reflect = "org.jetbrains.kotlin:kotlin-reflect:$VERSION"
     const val testJunit = "org.jetbrains.kotlin:kotlin-test-junit:$VERSION"
 }
